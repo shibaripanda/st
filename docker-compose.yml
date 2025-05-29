@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    networks:
+      - termetService-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    image: pandadoker/pgnest:01
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: server
+    depends_on:
+        db:
+          condition: service_healthy
+    ports:
+      - "5050:5050"
+    networks:
+      - termetService-network
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PORT=${PORT}
+
+  client:
+    image: pandadoker/termclient:01
+    build:
+      context: ./client
+      args:
+        VITE_SERVER_LINK: ${VITE_SERVER_LINK}
+      # dockerfile: Dockerfile
+    container_name: client
+    ports:
+      - "5173:80" 
+    restart: unless-stopped
+    
+
+networks:
+  termetService-network:
+    driver: bridge
+
+
