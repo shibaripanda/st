@@ -1,11 +1,8 @@
-import { Grid } from "@mantine/core"
-import { InputMaxCount } from "../components/inputMaxCount/InputMaxCount"
 import { MainTable } from "../components/table/MainTable"
 import { useEffect, useState } from "react"
-import { InputNewMessage } from "../components/inputNewMessage/InputNewMessage"
 import axios from "axios"
 import { StatusBar } from "../components/statusBar/statusBar"
-import { InputFindMessage } from "../components/inputFindMessage/InputFindMessage"
+import { ControlPanel } from "../components/controlPanel/ControlPanel"
 
 export interface Mess {
     id: number
@@ -37,29 +34,15 @@ export const MainPage = () => {
 
     return (
         <>
-        <Grid style={{margin: '15px'}} align="center">
-            <Grid.Col span={1}>
-                <></>
-            </Grid.Col>
-            <Grid.Col span={2}>
-                <InputMaxCount maxCountMessages={maxCountMessages} setMaxCountMessages={setMaxCountMessages}/>
-            </Grid.Col>
-            <Grid.Col span={1}>
-                <></>
-            </Grid.Col>
-            <Grid.Col span={3}>
-                <InputNewMessage setContainers={setContainers} maxCountMessages={maxCountMessages} containers={containers}/>
-            </Grid.Col>
-            <Grid.Col span={1}>
-                <></>
-            </Grid.Col>
-            <Grid.Col span={3}>
-                <InputFindMessage setSearchResult={setSearchResult} maxCountMessages={maxCountMessages} containers={containers} findMessage={findMessage} setFindMessage={setFindMessage}/>
-            </Grid.Col>
-            <Grid.Col span={1}>
-                <></>
-            </Grid.Col>
-        </Grid>
+        <ControlPanel 
+        maxCountMessages={maxCountMessages} 
+        setMaxCountMessages={setMaxCountMessages} 
+        setContainers={setContainers} 
+        containers={containers} 
+        setSearchResult={setSearchResult} 
+        findMessage={findMessage} 
+        setFindMessage={setFindMessage}
+        />
         <hr></hr>
         <StatusBar containers={containers} searchResult={searchResult} findMessage={findMessage}/>
         <hr></hr>
