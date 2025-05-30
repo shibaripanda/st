@@ -1,19 +1,20 @@
 import { Button, Modal, Space, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
-// import { useState } from 'react';
+import classes from './inputMaxCount.module.css';
 
 export function InputMaxCount({setMaxCountMessages, maxCountMessages}: any) {
 
     const [opened, { open, close }] = useDisclosure(false);
-    // const [max, setMax] = useState<number | undefined>(undefined)
 
     return (
         <>
         <TextInput
+        error={!maxCountMessages}
+        classNames={classes}
         placeholder=''
         value={maxCountMessages || ''}
-        label="Количество собщений в контейнере"
+        label="Объём контейнера"
         onChange={async (event) => {
                 const maxCount = Number(event.target.value)
                 if(event.target.value === ''){
@@ -30,18 +31,6 @@ export function InputMaxCount({setMaxCountMessages, maxCountMessages}: any) {
         }
         />
         <Space h={'xs'}/>
-        {/* <Button
-        variant='default'
-        disabled={!max}
-        onClick={async () => {
-            if(max && !isNaN(Number(max))){
-                
-                setMaxCountMessages(maxRes.data)
-            }
-        }}
-        >
-        Установить
-        </Button> */}
         <Modal opened={opened} onClose={close} title="Ошибка ввода">
         <Button
         onClick={close}

@@ -25,7 +25,6 @@ export class MessageController {
   @ApiOperation({ summary: 'Получить все контейнеры с сообщениями' })
   @ApiResponse({ status: 201, description: 'Успешно получено.' })
   async getAllConts() {
-    console.log(this.messageService.getMaxMessages());
     return {
       conts: await this.messageService.getAllWithMessages(),
       max: this.messageService.getMaxMessages(),

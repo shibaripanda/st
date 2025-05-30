@@ -1,19 +1,34 @@
 import { Button, Space, TextInput } from '@mantine/core';
 import { useState } from 'react';
-// import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
 import { Cont, Mess } from '../../pages/MainPage';
+import { IconSquareX } from '@tabler/icons-react';
 
 export function InputNewMessage({setContainers, maxCountMessages, containers}: any) {
 
     const [newMessage, setNewMessage] = useState<string>('')
-    // const [opened, { close }] = useDisclosure(false);
     const regMessage = /^[A-Za-z0-9 .,!?'"@#$%^&*()\-_=+]*$/
     const existMessages = containers.map((cont: Cont) => cont.messages).flat().map((mes: Mess) => mes.message)
 
     return (
         <>
         <TextInput
+        rightSection={
+            <span
+                style={{
+                cursor: 'pointer',
+                userSelect: 'none',
+                padding: '8px',           
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                }}
+                onClick={() => setNewMessage('')}
+                >
+                <IconSquareX />
+                </span>
+            }
         disabled={!maxCountMessages}
         placeholder=''
         value={newMessage ? newMessage.toString() : ''}
@@ -38,13 +53,6 @@ export function InputNewMessage({setContainers, maxCountMessages, containers}: a
         >
         Добавить сообщение
         </Button>
-        {/* <Modal opened={opened} onClose={close} title="Ошибка сообщения">
-        <Button
-        onClick={close}
-        >
-        Ok
-        </Button>
-        </Modal> */}
         </>
     );
 }

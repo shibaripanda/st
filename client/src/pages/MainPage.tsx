@@ -37,21 +37,27 @@ export const MainPage = () => {
 
     return (
         <>
-        <Grid style={{margin: '15px'}}>
+        <Grid style={{margin: '15px'}} align="center">
+            <Grid.Col span={1}>
+                <></>
+            </Grid.Col>
             <Grid.Col span={2}>
                 <InputMaxCount maxCountMessages={maxCountMessages} setMaxCountMessages={setMaxCountMessages}/>
             </Grid.Col>
             <Grid.Col span={1}>
                 <></>
             </Grid.Col>
-            <Grid.Col span={4}>
+            <Grid.Col span={3}>
                 <InputNewMessage setContainers={setContainers} maxCountMessages={maxCountMessages} containers={containers}/>
             </Grid.Col>
             <Grid.Col span={1}>
                 <></>
             </Grid.Col>
-            <Grid.Col span={4}>
+            <Grid.Col span={3}>
                 <InputFindMessage setSearchResult={setSearchResult} maxCountMessages={maxCountMessages} containers={containers} findMessage={findMessage} setFindMessage={setFindMessage}/>
+            </Grid.Col>
+            <Grid.Col span={1}>
+                <></>
             </Grid.Col>
         </Grid>
         <hr></hr>

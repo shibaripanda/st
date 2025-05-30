@@ -20,7 +20,7 @@ export class MessageService {
 
   setMaxMessages(maxMessages: number) {
     this.maxMessages = maxMessages;
-    console.log('maxMessages');
+    console.log('connect');
     return this.maxMessages;
   }
 
@@ -48,7 +48,6 @@ export class MessageService {
       );
       message.conteiner = currentConteiner;
       await this.messageRepo.save(message);
-      console.log(await this.getFullConteinierById(currentConteiner.id));
       return await this.getFullConteinierById(currentConteiner.id);
     } catch (e) {
       console.log(e);
