@@ -1,48 +1,50 @@
-import { Button, Modal, Space, TextInput } from '@mantine/core';
+import { Button, Space, TextInput } from '@mantine/core';
 import { useState } from 'react';
-import { useDisclosure } from '@mantine/hooks';
+// import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
-import { Cont } from '../../pages/MainPage';
+import { Cont, Mess } from '../../pages/MainPage';
 
-export function InputNewMessage({setConteiniers, countMessage}: any) {
+export function InputNewMessage({setContainers, maxCountMessages, containers}: any) {
 
     const [newMessage, setNewMessage] = useState<string>('')
-    const [opened, { close }] = useDisclosure(false);
+    // const [opened, { close }] = useDisclosure(false);
+    const regMessage = /^[A-Za-z0-9 .,!?'"@#$%^&*()\-_=+]*$/
+    const existMessages = containers.map((cont: Cont) => cont.messages).flat().map((mes: Mess) => mes.message)
 
     return (
         <>
         <TextInput
-        disabled={!countMessage}
+        disabled={!maxCountMessages}
         placeholder=''
         value={newMessage ? newMessage.toString() : ''}
         label="Новое сообщение"
         onChange={(event) => {
-                const maxCount = event.target.value
-                setNewMessage(maxCount)
+            if(regMessage.test(event.target.value))
+                setNewMessage(event.target.value)
             }
         }
         />
         <Space h={'xs'}/>
         <Button
         variant='default'
-        disabled={!newMessage || !countMessage}
+        disabled={!newMessage || !maxCountMessages || newMessage.length > 10 || existMessages.includes(newMessage)}
         onClick={async () => {
-            const cont = await axios.post(import.meta.env.VITE_SERVER_LINK + '/use/addnewmessage', {newmessage: newMessage})
-            console.log(cont)
-            setConteiniers((current: Cont[]) => {
-                return [cont.data, ...current.filter((item: Cont) => item.id !== cont.data.id)]
+            const updatedContFromServer = await axios.post(import.meta.env.VITE_SERVER_LINK + '/use/addnewmessage', {newmessage: newMessage})
+            console.log(updatedContFromServer)
+            setContainers((current: Cont[]) => {
+                return [updatedContFromServer.data, ...current.filter((item: Cont) => item.id !== updatedContFromServer.data.id)]
             })
         }}
         >
-        Установить
+        Добавить сообщение
         </Button>
-        <Modal opened={opened} onClose={close} title="Ошибка ввода">
+        {/* <Modal opened={opened} onClose={close} title="Ошибка сообщения">
         <Button
         onClick={close}
         >
         Ok
         </Button>
-        </Modal>
+        </Modal> */}
         </>
     );
 }

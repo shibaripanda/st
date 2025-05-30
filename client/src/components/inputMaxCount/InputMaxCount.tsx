@@ -1,27 +1,27 @@
 import { Button, Modal, Space, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
-import { useState } from 'react';
+// import { useState } from 'react';
 
-export function InputMaxCount({setCountMessage}: any) {
+export function InputMaxCount({setMaxCountMessages, maxCountMessages}: any) {
 
-    
     const [opened, { open, close }] = useDisclosure(false);
-    const [max, setMax] = useState<number | undefined>(undefined)
+    // const [max, setMax] = useState<number | undefined>(undefined)
 
     return (
         <>
         <TextInput
         placeholder=''
-        value={max}
+        value={maxCountMessages || ''}
         label="Количество собщений в контейнере"
-        onChange={(event) => {
+        onChange={async (event) => {
                 const maxCount = Number(event.target.value)
-                if(!isNaN(maxCount) && maxCount > 0){
-                    setMax(maxCount)
+                if(event.target.value === ''){
+                    setMaxCountMessages(undefined)
                 }
-                else if(event.target.value === ''){
-                    setMax(undefined)
+                else if(!isNaN(maxCount) && maxCount > 0){
+                    const maxCountFromServer = await axios.post(import.meta.env.VITE_SERVER_LINK + '/use/setmaxmessages', {maxmessages: maxCount})
+                    setMaxCountMessages(maxCountFromServer.data)
                 }
                 else{
                     open()
@@ -30,18 +30,18 @@ export function InputMaxCount({setCountMessage}: any) {
         }
         />
         <Space h={'xs'}/>
-        <Button
+        {/* <Button
         variant='default'
         disabled={!max}
         onClick={async () => {
             if(max && !isNaN(Number(max))){
-                const maxRes = await axios.post(import.meta.env.VITE_SERVER_LINK + '/use/setmaxmessages', {maxmessages: max})
-                setCountMessage(maxRes.data)
+                
+                setMaxCountMessages(maxRes.data)
             }
         }}
         >
         Установить
-        </Button>
+        </Button> */}
         <Modal opened={opened} onClose={close} title="Ошибка ввода">
         <Button
         onClick={close}

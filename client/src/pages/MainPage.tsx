@@ -4,6 +4,8 @@ import { MainTable } from "../components/table/MainTable"
 import { useEffect, useState } from "react"
 import { InputNewMessage } from "../components/inputNewMessage/InputNewMessage"
 import axios from "axios"
+import { StatusBar } from "../components/statusBar/statusBar"
+import { InputFindMessage } from "../components/inputFindMessage/InputFindMessage"
 
 export interface Mess {
     id: number
@@ -17,8 +19,10 @@ export interface Cont {
 
 export const MainPage = () => {
 
-    const [conteiniers, setConteiniers] = useState<Cont[]>([])
-    const [countMessage, setCountMessage] = useState<Number | undefined>(undefined)
+    const [containers, setContainers] = useState<Cont[]>([])
+    const [maxCountMessages, setMaxCountMessages] = useState<Number | undefined>(undefined)
+    const [findMessage, setFindMessage] = useState<string>('')
+    const [searchResult, setSearchResult] = useState<Cont | undefined>(undefined)
 
     useEffect(() => {
         getAllConts()
@@ -27,31 +31,33 @@ export const MainPage = () => {
     const getAllConts = async () => {
         const conts = await axios.get(import.meta.env.VITE_SERVER_LINK + '/use/getallconts')
         console.log(conts.data)
-        setConteiniers(conts.data.conts.reverse())
-        setCountMessage(conts.data.max)
+        setContainers(conts.data.conts.reverse())
+        setMaxCountMessages(conts.data.max)
     }
 
     return (
         <>
         <Grid style={{margin: '15px'}}>
             <Grid.Col span={2}>
-                <InputMaxCount setCountMessage={setCountMessage}/>
+                <InputMaxCount maxCountMessages={maxCountMessages} setMaxCountMessages={setMaxCountMessages}/>
             </Grid.Col>
             <Grid.Col span={1}>
-                {/* <InputMaxCount/> */}
+                <></>
             </Grid.Col>
             <Grid.Col span={4}>
-                <InputNewMessage setConteiniers={setConteiniers} countMessage={countMessage}/>
+                <InputNewMessage setContainers={setContainers} maxCountMessages={maxCountMessages} containers={containers}/>
             </Grid.Col>
             <Grid.Col span={1}>
-                {/* <InputMaxCount/> */}
+                <></>
             </Grid.Col>
             <Grid.Col span={4}>
-                <InputMaxCount/>
+                <InputFindMessage setSearchResult={setSearchResult} maxCountMessages={maxCountMessages} containers={containers} findMessage={findMessage} setFindMessage={setFindMessage}/>
             </Grid.Col>
         </Grid>
         <hr></hr>
-        <MainTable conteiniers={conteiniers}/>
+        <StatusBar containers={containers} searchResult={searchResult} findMessage={findMessage}/>
+        <hr></hr>
+        <MainTable containers={containers}/>
     </>
     )
 }

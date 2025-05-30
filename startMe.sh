@@ -7,4 +7,4 @@ POSTGRES_PASSWORD=password
 PORT=5050
 VITE_SERVER_LINK=http://localhost:5050
 EOF
-docker-compose up --build
+docker compose up --build
