@@ -1,12 +1,11 @@
 import { Button, Space, TextInput } from '@mantine/core';
-import { useState } from 'react';
 import axios from 'axios';
 import { Cont, Mess } from '../../pages/MainPage';
 import { IconSquareX } from '@tabler/icons-react';
 
-export function InputNewMessage({setContainers, maxCountMessages, containers}: any) {
+export function InputNewMessage({setNewMessage, newMessage, setContainers, maxCountMessages, containers, setStatusBarData}: any) {
 
-    const [newMessage, setNewMessage] = useState<string>('')
+    // const [newMessage, setNewMessage] = useState<string>('')
     const regMessage = /^[A-Za-z0-9 .,!?'"@#$%^&*()\-_=+]*$/
     const existMessages = containers.map((cont: Cont) => cont.messages).flat().map((mes: Mess) => mes.message)
 
@@ -24,7 +23,10 @@ export function InputNewMessage({setContainers, maxCountMessages, containers}: a
                 justifyContent: 'center',
                 height: '100%',
                 }}
-                onClick={() => setNewMessage('')}
+                onClick={() => {
+                    sessionStorage.removeItem('newMessage')
+                    setNewMessage('')
+                }}
                 >
                 <IconSquareX />
                 </span>
@@ -35,6 +37,7 @@ export function InputNewMessage({setContainers, maxCountMessages, containers}: a
         label="Новое сообщение"
         onChange={(event) => {
             if(regMessage.test(event.target.value))
+                sessionStorage.setItem('newMessage', event.target.value)
                 setNewMessage(event.target.value)
             }
         }
@@ -44,10 +47,11 @@ export function InputNewMessage({setContainers, maxCountMessages, containers}: a
         variant='default'
         disabled={!newMessage || !maxCountMessages || newMessage.length > 10 || existMessages.includes(newMessage)}
         onClick={async () => {
-            const updatedContFromServer = await axios.post(import.meta.env.VITE_SERVER_LINK + '/use/addnewmessage', {newmessage: newMessage})
-            console.log(updatedContFromServer)
+            const appData = await axios.post(import.meta.env.VITE_SERVER_LINK + '/use/addnewmessage', {newmessage: newMessage})
+            console.log(appData)
+            setStatusBarData({countMessages: appData.data.countMessages, countConts:appData.data.countConts})
             setContainers((current: Cont[]) => {
-                return [updatedContFromServer.data, ...current.filter((item: Cont) => item.id !== updatedContFromServer.data.id)]
+                return [appData.data.newOrUpdatedCont, ...current.filter((item: Cont) => item.id !== appData.data.newOrUpdatedCont.id)]
             })
         }}
         >

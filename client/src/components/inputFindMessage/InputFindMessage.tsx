@@ -1,11 +1,8 @@
-import { Button, Space, Modal, TextInput } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { Cont, Mess } from '../../pages/MainPage';
+import { Button, Space, TextInput } from '@mantine/core';
 import { IconSquareX } from '@tabler/icons-react';
+import axios from 'axios';
 
-export function InputFindMessage({containers, findMessage, setFindMessage, maxCountMessages, setSearchResult}: any) {
-
-    const [opened, { open, close }] = useDisclosure(false);
+export function InputFindMessage({openAlertModal, findMessage, setFindMessage, maxCountMessages, setSearchResult}: any) {
 
     return (
         <>
@@ -23,6 +20,7 @@ export function InputFindMessage({containers, findMessage, setFindMessage, maxCo
                 }}
                 onClick={() => {
                     setSearchResult(undefined)
+                    sessionStorage.removeItem('findMessage')
                     setFindMessage('')
                     }
                 }
@@ -36,6 +34,7 @@ export function InputFindMessage({containers, findMessage, setFindMessage, maxCo
         label="Поиск сообщения"
         onChange={(event) => {
             setSearchResult(undefined)
+            sessionStorage.setItem('findMessage', event.target.value)
             setFindMessage(event.target.value)
             }
         }
@@ -45,26 +44,19 @@ export function InputFindMessage({containers, findMessage, setFindMessage, maxCo
         variant='default'
         disabled={!findMessage}
         onClick={async () => {
-            const result = containers.find((cont: Cont) => cont.messages.some((mes: Mess) => mes.message === findMessage))
-            console.log(result)
-            if(result){
-                setSearchResult(result)
+            const contId = await axios.post(import.meta.env.VITE_SERVER_LINK + '/use/findcontbymessage', {message: findMessage})
+            console.log(contId)
+            if(contId.data){
+                setSearchResult(contId.data)
             }
             else{
                 setSearchResult(undefined)
-                open()
+                openAlertModal("Сообщение не найдено")
             }
         }}
         >
         Найти сообщение
         </Button>
-        <Modal opened={opened} onClose={close} title="Сообщение не найдено">
-        <Button
-        onClick={close}
-        >
-        Ok
-        </Button>
-        </Modal>
         </>
     );
 }

@@ -1,11 +1,8 @@
-import { Button, Modal, Space, TextInput } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { Space, TextInput } from '@mantine/core';
 import axios from 'axios';
 import classes from './inputMaxCount.module.css';
 
-export function InputMaxCount({setMaxCountMessages, maxCountMessages}: any) {
-
-    const [opened, { open, close }] = useDisclosure(false);
+export function InputMaxCount({openAlertModal, setMaxCountMessages, maxCountMessages}: any) {
 
     return (
         <>
@@ -25,19 +22,12 @@ export function InputMaxCount({setMaxCountMessages, maxCountMessages}: any) {
                     setMaxCountMessages(maxCountFromServer.data)
                 }
                 else{
-                    open()
+                    openAlertModal("Ошибка ввода")
                 }
             }
         }
         />
         <Space h={'xs'}/>
-        <Modal opened={opened} onClose={close} title="Ошибка ввода">
-        <Button
-        onClick={close}
-        >
-        Ok
-        </Button>
-        </Modal>
         </>
     );
 }

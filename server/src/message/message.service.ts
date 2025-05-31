@@ -55,13 +55,36 @@ export class MessageService {
     }
   }
 
-  async getAllWithMessages(): Promise<Conteiner[]> {
-    return this.conteinerRepo.find({
-      relations: ['messages'],
-      order: {
-        id: 'ASC',
-      },
+  async findContIdByMessage(message: string) {
+    const mes = await this.messageRepo.findOne({
+      where: { message },
+      relations: ['conteiner'],
     });
+    return mes ? mes.conteiner.id : null;
+  }
+
+  async getContsCount(): Promise<number> {
+    return await this.conteinerRepo.count();
+  }
+
+  async getMessagesCount(): Promise<number> {
+    return await this.messageRepo.count();
+  }
+
+  async getAllWithMessages(
+    limit: number,
+    offset: number,
+  ): Promise<{ data: Conteiner[]; total: number }> {
+    const [data, total]: [Conteiner[], number] =
+      await this.conteinerRepo.findAndCount({
+        relations: ['messages'],
+        order: {
+          createdAt: 'DESC',
+        },
+        skip: offset,
+        take: limit,
+      });
+    return { data, total };
   }
 
   async getFullConteinierById(id: number) {

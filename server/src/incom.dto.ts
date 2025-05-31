@@ -9,8 +9,31 @@ import {
   Min,
 } from 'class-validator';
 
+export class FindMessageDto {
+  @ApiProperty({ example: 'Example', description: 'Строка' })
+  @IsNotEmpty()
+  @IsString()
+  message: string;
+}
+
+export class GetContsDto {
+  @ApiProperty({ example: 50, description: 'Целое, положительное число' })
+  @IsNotEmpty()
+  @IsNumber()
+  @IsInt()
+  @Min(0)
+  limit: number;
+
+  @ApiProperty({ example: 1, description: 'Целое, положительное число' })
+  @IsNotEmpty()
+  @IsNumber()
+  @IsInt()
+  @Min(0)
+  offset: number;
+}
+
 export class SetMaxMessagesDto {
-  @ApiProperty({ example: 5, description: 'Объект' })
+  @ApiProperty({ example: 5, description: 'Целое, положительное число' })
   @IsNotEmpty()
   @IsNumber()
   @IsInt()
@@ -19,7 +42,11 @@ export class SetMaxMessagesDto {
 }
 
 export class AddNewMessageDto {
-  @ApiProperty({ example: 'Example', description: 'Объект' })
+  @ApiProperty({
+    example: 'Example',
+    description:
+      'Строка, Допустимы только латинские буквы, цифры и стандартные символы',
+  })
   @IsNotEmpty()
   @IsString()
   @MaxLength(10)
