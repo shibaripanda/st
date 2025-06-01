@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  HttpException,
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,7 +21,7 @@ export class MessageService {
 
   setMaxMessages(maxMessages: number) {
     this.maxMessages = maxMessages;
-    console.log('connect');
+    console.log('connect', this.maxMessages);
     return this.maxMessages;
   }
 
@@ -50,7 +51,9 @@ export class MessageService {
       await this.messageRepo.save(message);
       return await this.getFullConteinierById(currentConteiner.id);
     } catch (e) {
-      console.log(e);
+      if (e instanceof HttpException) {
+        throw e;
+      }
       throw new ConflictException('Что то пошло не так');
     }
   }

@@ -1,3 +1,7 @@
 docker must have !!!
 
-http://localhost:3000
+app:
+http://localhost:3000 
+
+api:
+http://localhost:5050/api

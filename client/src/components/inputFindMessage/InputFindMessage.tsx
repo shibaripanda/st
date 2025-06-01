@@ -2,7 +2,7 @@ import { Button, Space, TextInput } from '@mantine/core';
 import { IconSquareX } from '@tabler/icons-react';
 import axios from 'axios';
 
-export function InputFindMessage({openAlertModal, findMessage, setFindMessage, maxCountMessages, setSearchResult}: any) {
+export function InputFindMessage({setCurrentError, openAlertModal, findMessage, setFindMessage, maxCountMessages, setSearchResult}: any) {
 
     return (
         <>
@@ -22,6 +22,7 @@ export function InputFindMessage({openAlertModal, findMessage, setFindMessage, m
                     setSearchResult(undefined)
                     sessionStorage.removeItem('findMessage')
                     setFindMessage('')
+                    setCurrentError('')
                     }
                 }
                 >
@@ -36,21 +37,23 @@ export function InputFindMessage({openAlertModal, findMessage, setFindMessage, m
             setSearchResult(undefined)
             sessionStorage.setItem('findMessage', event.target.value)
             setFindMessage(event.target.value)
+            setCurrentError('')
             }
         }
         />
         <Space h={'xs'}/>
         <Button
         variant='default'
-        disabled={!findMessage}
+        disabled={!findMessage || !maxCountMessages}
         onClick={async () => {
             const contId = await axios.post(import.meta.env.VITE_SERVER_LINK + '/use/findcontbymessage', {message: findMessage})
-            console.log(contId)
             if(contId.data){
+                setCurrentError('')
                 setSearchResult(contId.data)
             }
             else{
                 setSearchResult(undefined)
+                setCurrentError('')
                 openAlertModal("Сообщение не найдено")
             }
         }}
